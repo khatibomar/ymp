@@ -2,7 +2,11 @@ module github.com/khatibomar/ymp
 
 go 1.17
 
-require fyne.io/fyne/v2 v2.1.1
+require (
+	fyne.io/fyne/v2 v2.1.1
+	github.com/blang/mpv v0.0.0-20160810175505-d56d7352e068
+	github.com/pkg/errors v0.9.1
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

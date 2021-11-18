@@ -66,11 +66,16 @@ func main() {
 			return
 		}
 		log.Println("Playing:", input.Text)
-		go play(c, input.Text)
+		c.Loadfile(input.Text, remoteMpv.LoadListModeReplace)
+		c.SetPause(false)
 	})
+
+	paused := false
 
 	pauseBtn := widget.NewButton("pause", func() {
 		log.Println("pause called")
+		paused = !paused
+		c.SetPause(paused)
 	})
 
 	content := container.New(
@@ -96,9 +101,4 @@ func showError(a fyne.App, err error) {
 	)
 	win.SetContent(content)
 	win.Show()
-}
-
-func play(c *remoteMpv.Client, url string) {
-	c.Loadfile(url, remoteMpv.LoadListModeReplace)
-	c.SetPause(false)
 }

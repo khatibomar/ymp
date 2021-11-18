@@ -50,6 +50,10 @@ func main() {
 	input.SetPlaceHolder("Enter youtube URL...")
 
 	slider := widget.NewSlider(0, 100)
+	slider.Value = 100
+	slider.OnChanged = func(f float64) {
+		c.SetProperty("volume", f)
+	}
 
 	linkValidator := validation.NewRegexp(ytExp, "Invalid youtube link")
 

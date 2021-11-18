@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/validation"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -18,7 +21,7 @@ func main() {
 	myWindow := myApp.NewWindow("Entry Widget")
 
 	input := widget.NewEntry()
-	input.SetPlaceHolder("Enter text...")
+	input.SetPlaceHolder("Enter youtube URL...")
 
 	slider := widget.NewSlider(0, 100)
 
@@ -26,11 +29,14 @@ func main() {
 
 	playBtn := widget.NewButton("play", func() {
 		if input.Text == "" {
-			log.Println("Empty link provided")
+			err := fmt.Errorf("Empty link provided")
+			log.Println(err)
+			showError(myApp, err)
 			return
 		}
 		if err := linkValidator(input.Text); err != nil {
 			log.Println(err)
+			showError(myApp, err)
 			return
 		}
 		log.Println("Playing:", input.Text)
@@ -40,18 +46,27 @@ func main() {
 		log.Println("pause called")
 	})
 
-	content := container.NewVBox(
+	content := container.New(
+		layout.NewVBoxLayout(),
 		input,
-		container.NewHBox(
-			playBtn,
-			pauseBtn,
-			// TODO(khatibomar) : Investigate why slider is not taking all space
-			container.NewMax(
-				slider,
-			),
-		),
+		playBtn,
+		pauseBtn,
+		slider,
 	)
 
 	myWindow.SetContent(content)
 	myWindow.ShowAndRun()
+}
+
+func showError(a fyne.App, err error) {
+	win := a.NewWindow("Error")
+	win.Resize(fyne.NewSize(100, 50))
+	content := container.NewVBox(
+		widget.NewLabel(err.Error()),
+		widget.NewButton("close", func() {
+			win.Close()
+		}),
+	)
+	win.SetContent(content)
+	win.Show()
 }

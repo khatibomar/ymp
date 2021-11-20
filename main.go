@@ -35,9 +35,6 @@ func main() {
 	if err := mpv.Cmd.Start(); err != nil {
 		log.Println(errors.Wrap(err, "failed to start mpv"))
 	}
-	if err := mpv.Cmd.Run(); err != nil {
-		log.Println(err)
-	}
 
 	// Give us a 5-second period timeout.
 	time.Sleep(time.Second)

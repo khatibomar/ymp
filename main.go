@@ -88,6 +88,7 @@ func main() {
 			pauseBtn.Text = "Pause"
 		}
 		c.SetPause(paused)
+		pauseBtn.Refresh()
 	})
 
 	content := container.New(

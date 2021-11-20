@@ -43,10 +43,18 @@ func main() {
 	log.Println("ippc client created")
 	c := remoteMpv.NewClient(ipcc) // Highlevel client, can also use RPCClient
 
-	input := widget.NewEntry()
+	// components declaration
+	var input *widget.Entry
+	var slider *widget.Slider
+	var playBtn *widget.Button
+	var pauseBtn *widget.Button
+
+	paused := false
+
+	input = widget.NewEntry()
 	input.SetPlaceHolder("Enter youtube URL...")
 
-	slider := widget.NewSlider(0, 100)
+	slider = widget.NewSlider(0, 100)
 	slider.Value = 100
 	slider.OnChanged = func(f float64) {
 		c.SetProperty("volume", f)
@@ -54,7 +62,7 @@ func main() {
 
 	linkValidator := validation.NewRegexp(ytExp, "Invalid youtube link")
 
-	playBtn := widget.NewButton("play", func() {
+	playBtn = widget.NewButton("Play", func() {
 		if input.Text == "" {
 			err := fmt.Errorf("Empty link provided")
 			log.Println(err)
@@ -71,11 +79,14 @@ func main() {
 		c.SetPause(false)
 	})
 
-	paused := false
-
-	pauseBtn := widget.NewButton("pause", func() {
+	pauseBtn = widget.NewButton("Pause", func() {
 		log.Println("pause called")
 		paused = !paused
+		if paused {
+			pauseBtn.Text = "Resume"
+		} else {
+			pauseBtn.Text = "Pause"
+		}
 		c.SetPause(paused)
 	})
 

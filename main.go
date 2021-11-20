@@ -77,6 +77,7 @@ func main() {
 		log.Println("Playing:", input.Text)
 		c.Loadfile(input.Text, remoteMpv.LoadListModeReplace)
 		c.SetPause(false)
+		pauseBtn.Enable()
 	})
 
 	pauseBtn = widget.NewButton("Pause", func() {
@@ -90,6 +91,7 @@ func main() {
 		c.SetPause(paused)
 		pauseBtn.Refresh()
 	})
+	pauseBtn.Disable()
 
 	content := container.New(
 		layout.NewVBoxLayout(),

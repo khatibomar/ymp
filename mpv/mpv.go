@@ -43,12 +43,11 @@ func New() (*Mpv, error, func()) {
 	cmd.Env = os.Environ()
 	cmd.Stderr = os.Stderr
 
-	cleanup := func() {
-		cmd.Process.Kill()
-		os.RemoveAll(sockPath)
-	}
 	return &Mpv{
-		Cmd:        cmd,
-		SocketPath: sockPath,
-	}, nil, cleanup
+			Cmd:        cmd,
+			SocketPath: sockPath,
+		}, nil, func() {
+			cmd.Process.Kill()
+			os.RemoveAll(sockPath)
+		}
 }

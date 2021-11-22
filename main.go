@@ -36,8 +36,8 @@ func main() {
 		log.Println(errors.Wrap(err, "failed to start mpv"))
 	}
 
-	// Give us a 5-second period timeout.
-	time.Sleep(time.Second)
+	// Give us a 3-second period timeout.
+	time.Sleep(3 * time.Second)
 	log.Println("mpv running")
 	ipcc := remoteMpv.NewIPCClient(mpv.SocketPath) // Lowlevel client
 	log.Println("ippc client created")

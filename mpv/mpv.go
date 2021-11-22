@@ -1,6 +1,7 @@
 package mpv
 
 import (
+	"bufio"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,6 +16,7 @@ var (
 type Mpv struct {
 	Cmd        *exec.Cmd
 	SocketPath string
+	OutBuff    *bufio.Reader
 }
 
 func New() (*Mpv, error, func()) {
@@ -25,27 +27,31 @@ func New() (*Mpv, error, func()) {
 
 	args := []string{
 		"--idle",
-		"--quiet",
 		"--pause",
 		"--no-input-terminal",
 		"--loop-playlist=no",
 		"--gapless-audio=weak",
 		"--replaygain=no",
 		// "--replaygain-clip=no",
-		"--ad=lavc:*",
 		"--input-ipc-server=" + sockPath,
 		"--volume=100",
 		"--volume-max=100",
 		"--no-video",
+		"--no-resume-playback",
 	}
 
 	cmd := exec.Command("mpv", args...)
 	cmd.Env = os.Environ()
 	cmd.Stderr = os.Stderr
 
+	stdout, _ := cmd.StdoutPipe()
+
+	buf := bufio.NewReader(stdout)
+
 	return &Mpv{
 			Cmd:        cmd,
 			SocketPath: sockPath,
+			OutBuff:    buf,
 		}, nil, func() {
 			cmd.Process.Kill()
 			os.RemoveAll(sockPath)

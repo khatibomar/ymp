@@ -48,6 +48,7 @@ func main() {
 	var slider *widget.Slider
 	var playBtn *widget.Button
 	var pauseBtn *widget.Button
+	var logBox *widget.TextGrid
 
 	paused := false
 
@@ -93,12 +94,25 @@ func main() {
 	})
 	pauseBtn.Disable()
 
+	logBox = widget.NewTextGrid()
+	logText := "Logs\n"
+	logBox.SetText(logText)
+
+	go func() {
+		for {
+			line, _, _ := mpv.OutBuff.ReadLine()
+			logText += string(line) + "\n"
+			logBox.SetText(logText)
+		}
+	}()
+
 	content := container.New(
 		layout.NewVBoxLayout(),
 		input,
 		playBtn,
 		pauseBtn,
 		slider,
+		logBox,
 	)
 
 	myWindow.SetContent(content)

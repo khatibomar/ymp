@@ -49,6 +49,8 @@ func main() {
 	var playBtn *widget.Button
 	var pauseBtn *widget.Button
 	var logBox *widget.TextGrid
+	var logLabel *widget.Label
+	var logText string
 
 	paused := false
 
@@ -79,6 +81,8 @@ func main() {
 		c.Loadfile(input.Text, remoteMpv.LoadListModeReplace)
 		c.SetPause(false)
 		pauseBtn.Enable()
+		logText = ""
+		logBox.SetText(logText)
 	})
 
 	pauseBtn = widget.NewButton("Pause", func() {
@@ -95,16 +99,19 @@ func main() {
 	pauseBtn.Disable()
 
 	logBox = widget.NewTextGrid()
-	logText := "Logs\n"
-	logBox.SetText(logText)
 
 	go func() {
 		for {
 			line, _, _ := mpv.OutBuff.ReadLine()
+			if string(line) == "\n" || string(line) == "" {
+				continue
+			}
 			logText += string(line) + "\n"
 			logBox.SetText(logText)
 		}
 	}()
+
+	logLabel = widget.NewLabel("Logs:")
 
 	content := container.New(
 		layout.NewVBoxLayout(),
@@ -112,6 +119,7 @@ func main() {
 		playBtn,
 		pauseBtn,
 		slider,
+		logLabel,
 		logBox,
 	)
 
